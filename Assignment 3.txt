@@ -1,0 +1,356 @@
+💡 **Question 1**
+Given an integer array nums of length n and an integer target, find three integers
+in nums such that the sum is closest to the target.
+Return the sum of the three integers.
+
+You may assume that each input would have exactly one solution.
+
+**Example 1:**
+Input: nums = [-1,2,1,-4], target = 1
+Output: 2
+
+**Explanation:** The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+Solu:
+def threeSumClosest(nums, target):
+    nums.sort()  # Sort the array in ascending order
+    n = len(nums)
+    closest_sum = float('inf')  # Initialize with a large value
+    
+    for i in range(n - 2):
+        left = i + 1
+        right = n - 1
+        
+        while left < right:
+            current_sum = nums[i] + nums[left] + nums[right]
+            
+            if current_sum == target:
+                return target  # Exact sum found, return the target
+            
+            if abs(current_sum - target) < abs(closest_sum - target):
+                closest_sum = current_sum
+            
+            if current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    
+    return closest_sum
+
+# Test the function with the example input
+nums = [-1, 2, 1, -4]
+target = 1
+result = threeSumClosest(nums, target)
+print(result)  # Output: 2
+
+
+
+
+💡 **Question 2**
+Given an array nums of n integers, return an array of all the unique quadruplets
+[nums[a], nums[b], nums[c], nums[d]] such that:
+           ● 0 <= a, b, c, d < n
+           ● a, b, c, and d are distinct.
+           ● nums[a] + nums[b] + nums[c] + nums[d] == target
+
+You may return the answer in any order.
+
+**Example 1:**
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+Solu:
+def fourSum(nums, target):
+    nums.sort()  # Sort the array in ascending order
+    n = len(nums)
+    quadruplets = []
+    
+    for i in range(n - 3):
+        # Skip duplicate values for the first element
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        
+        for j in range(i + 1, n - 2):
+            # Skip duplicate values for the second element
+            if j > i + 1 and nums[j] == nums[j - 1]:
+                continue
+            
+            left = j + 1
+            right = n - 1
+            
+            while left < right:
+                current_sum = nums[i] + nums[j] + nums[left] + nums[right]
+                
+                if current_sum == target:
+                    quadruplets.append([nums[i], nums[j], nums[left], nums[right]])
+                    
+                    # Skip duplicate values for the third element
+                    while left < right and nums[left] == nums[left + 1]:
+                        left += 1
+                    
+                    # Skip duplicate values for the fourth element
+                    while left < right and nums[right] == nums[right - 1]:
+                        right -= 1
+                    
+                    left += 1
+                    right -= 1
+                
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+    
+    return quadruplets
+
+# Test the function with the example input
+nums = [1, 0, -1, 0, -2, 2]
+target = 0
+result = fourSum(nums, target)
+print(result)  # Output: [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]
+
+
+
+💡 **Question 3**
+A permutation of an array of integers is an arrangement of its members into a
+sequence or linear order.
+
+For example, for arr = [1,2,3], the following are all the permutations of arr:
+[1,2,3], [1,3,2], [2, 1, 3], [2, 3, 1], [3,1,2], [3,2,1].
+
+The next permutation of an array of integers is the next lexicographically greater
+permutation of its integer. More formally, if all the permutations of the array are
+sorted in one container according to their lexicographical order, then the next
+permutation of that array is the permutation that follows it in the sorted container.
+
+If such an arrangement is not possible, the array must be rearranged as the
+lowest possible order (i.e., sorted in ascending order).
+
+● For example, the next permutation of arr = [1,2,3] is [1,3,2].
+● Similarly, the next permutation of arr = [2,3,1] is [3,1,2].
+● While the next permutation of arr = [3,2,1] is [1,2,3] because [3,2,1] does not
+have a lexicographical larger rearrangement.
+
+Given an array of integers nums, find the next permutation of nums.
+The replacement must be in place and use only constant extra memory.
+
+**Example 1:**
+Input: nums = [1,2,3]
+Output: [1,3,2]
+
+Solu:
+def nextPermutation(nums):
+    n = len(nums)
+    i = n - 2
+    
+    # Find the first decreasing element from the right
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+    
+    if i >= 0:
+        j = n - 1
+        
+        # Find the first element greater than the decreasing element
+        while j >= 0 and nums[j] <= nums[i]:
+            j -= 1
+        
+        # Swap the decreasing element with the greater element
+        nums[i], nums[j] = nums[j], nums[i]
+    
+    # Reverse the suffix to get the next lexicographically greater permutation
+    left = i + 1
+    right = n - 1
+    
+    while left < right:
+        nums[left], nums[right] = nums[right], nums[left]
+        left += 1
+        right -= 1
+
+# Test the function with the example input
+nums = [1, 2, 3]
+nextPermutation(nums)
+print(nums)  # Output: [1, 3, 2]
+
+
+
+💡 **Question 4**
+Given a sorted array of distinct integers and a target value, return the index if the
+target is found. If not, return the index where it would be if it were inserted in
+order.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+**Example 1:**
+Input: nums = [1,3,5,6], target = 5
+Output: 2
+
+Solu:
+def searchInsert(nums, target):
+    left = 0
+    right = len(nums) - 1
+    
+    while left <= right:
+        mid = left + (right - left) // 2
+        
+        if nums[mid] == target:
+            return mid
+        
+        if nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # The target is not found, return the index where it would be inserted
+    return left
+
+# Test the function with the example input
+nums = [1, 3, 5, 6]
+target = 5
+result = searchInsert(nums, target)
+print(result)  # Output: 2
+
+
+
+
+💡 **Question 5**
+You are given a large integer represented as an integer array digits, where each
+digits[i] is the ith digit of the integer. The digits are ordered from most significant
+to least significant in left-to-right order. The large integer does not contain any
+leading 0's.
+
+Increment the large integer by one and return the resulting array of digits.
+
+**Example 1:**
+Input: digits = [1,2,3]
+Output: [1,2,4]
+
+**Explanation:** The array represents the integer 123.
+Incrementing by one gives 123 + 1 = 124.
+Thus, the result should be [1,2,4].
+
+Solu:
+
+
+
+
+💡 **Question 6**
+Given a non-empty array of integers nums, every element appears twice except
+for one. Find that single one.
+
+You must implement a solution with a linear runtime complexity and use only
+constant extra space.
+
+**Example 1:**
+Input: nums = [2,2,1]
+Output: 1
+
+Solu: 
+def plusOne(digits):
+    n = len(digits)
+    
+    # Start from the rightmost digit
+    for i in range(n - 1, -1, -1):
+        # Increment the digit by 1
+        digits[i] += 1
+        
+        # If the digit becomes 10, carry over the 1 to the next digit
+        if digits[i] == 10:
+            digits[i] = 0
+        else:
+            # No carry, return the updated digits
+            return digits
+    
+    # If the first digit becomes 10, insert 1 at the beginning
+    digits.insert(0, 1)
+    
+    return digits
+
+# Test the function with the example input
+digits = [1, 2, 3]
+result = plusOne(digits)
+print(result)  # Output: [1, 2, 4]
+
+
+
+
+💡 **Question 7**
+You are given an inclusive range [lower, upper] and a sorted unique integer array
+nums, where all elements are within the inclusive range.
+
+A number x is considered missing if x is in the range [lower, upper] and x is not in
+nums.
+
+Return the shortest sorted list of ranges that exactly covers all the missing
+numbers. That is, no element of nums is included in any of the ranges, and each
+missing number is covered by one of the ranges.
+
+**Example 1:**
+Input: nums = [0,1,3,50,75], lower = 0, upper = 99
+Output: [[2,2],[4,49],[51,74],[76,99]]
+
+**Explanation:** The ranges are:
+[2,2]
+[4,49]
+[51,74]
+[76,99]
+
+Solu:
+def findMissingRanges(nums, lower, upper):
+    missingRanges = []
+    
+    # Helper function to add missing range to the result
+    def addRange(start, end):
+        if start == end:
+            missingRanges.append(str(start))
+        else:
+            missingRanges.append(str(start) + "->" + str(end))
+    
+    # Handle the case before the first element
+    if nums[0] > lower:
+        addRange(lower, nums[0] - 1)
+    
+    # Handle the case between elements
+    for i in range(1, len(nums)):
+        if nums[i] > nums[i-1] + 1:
+            addRange(nums[i-1] + 1, nums[i] - 1)
+    
+    # Handle the case after the last element
+    if nums[-1] < upper:
+        addRange(nums[-1] + 1, upper)
+    
+    return missingRanges
+
+# Test the function with the example input
+nums = [0, 1, 3, 50, 75]
+lower = 0
+upper = 99
+result = findMissingRanges(nums, lower, upper)
+print(result)  # Output: ["2", "4->49", "51->74", "76->99"]
+
+
+
+💡 **Question 8**
+Given an array of meeting time intervals where intervals[i] = [starti, endi],
+determine if a person could attend all meetings.
+
+**Example 1:**
+Input: intervals = [[0,30],[5,10],[15,20]]
+Output: false
+
+Solu:
+
+def canAttendMeetings(intervals):
+    # Sort the intervals based on the start time
+    intervals.sort(key=lambda x: x[0])
+    
+    # Check for any overlapping intervals
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i-1][1]:
+            return False
+    
+    return True
+
+# Test the function with the example input
+intervals = [[0, 30], [5, 10], [15, 20]]
+result = canAttendMeetings(intervals)
+print(result)  # Output: False
+
